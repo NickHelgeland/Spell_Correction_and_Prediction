@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+
+
+<BorderPane fx:id="rootPane" fx:controller="GUIController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="784.0" prefWidth="1157.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <VBox BorderPane.alignment="CENTER" alignment="CENTER" spacing="10" >
+         <HBox fx:id="hbox" alignment="CENTER" spacing="25.0" >
+            <children>
+               <TextField fx:id="inputField" />
+               <Button fx:id="submitButton" text="Submit" />
+            </children>
+         </HBox>
+         <HBox fx:id="hbox" alignment="CENTER" spacing="25.0" >
+            <children>
+               <VBox>
+                  <Button fx:id="secondSuggestion" />
+                  <Label text="On Level" />
+               </VBox>
+               <VBox>
+                  <Button fx:id="firstSuggestion" />
+                  <Label text="Lower Level" />
+               </VBox>
+               <VBox>
+                  <Button fx:id="thirdSuggestion" />
+                  <Label text="Upper Level" />
+               </VBox>
+            </children>
+         </HBox>
+      </VBox>
+   </center>
+</BorderPane>
