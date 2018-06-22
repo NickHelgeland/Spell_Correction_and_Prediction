@@ -44,22 +44,22 @@ public class GUIController {
 			thirdSuggestion.setText("");
 
 			if(wordProcessor.getSuggestions(wordProcessor.
-					findWord(input, wordProcessor.wordTree)).size() >= 1)
+					findWord(input.value, wordProcessor.wordTree)).size() >= 1)
 			{
 				firstSuggestion.setText(wordProcessor
-					.getSuggestions(wordProcessor.findWord(input, wordProcessor.wordTree)).get(0));
+					.getSuggestions(wordProcessor.findWord(input.value, wordProcessor.wordTree)).get(0));
 			}
 			if(wordProcessor.getSuggestions(wordProcessor.
-					findWord(input, wordProcessor.wordTree)).size() >= 2)
+					findWord(input.value, wordProcessor.wordTree)).size() >= 2)
 			{
 				secondSuggestion.setText(wordProcessor
-					.getSuggestions(wordProcessor.findWord(input, wordProcessor.wordTree)).get(1));
+					.getSuggestions(wordProcessor.findWord(input.value, wordProcessor.wordTree)).get(1));
 			}
 			if(wordProcessor.getSuggestions(wordProcessor.
-					findWord(input, wordProcessor.wordTree)).size() >= 3)
+					findWord(input.value, wordProcessor.wordTree)).size() >= 3)
 			{
 				thirdSuggestion.setText(wordProcessor
-					.getSuggestions(wordProcessor.findWord(input, wordProcessor.wordTree)).get(2));
+					.getSuggestions(wordProcessor.findWord(input.value, wordProcessor.wordTree)).get(2));
 			}
 		});
 	}

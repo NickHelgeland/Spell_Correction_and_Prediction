@@ -15,6 +15,10 @@ public class WordProcessor
 {
 	public WordTree wordTree;
 
+	public WordTree dictionaryTree;
+
+	private Boolean dictionaryIntitialized;
+
 	/*
 	 * This is the constructor for the WordProcessor class. It reads in our data and uses it
 	 * to construct our initial WordTree.
@@ -22,6 +26,19 @@ public class WordProcessor
 	public WordProcessor()
 	{
 		wordTree = new WordTree(new Word("root"));
+
+		dictionaryTree = new WordTree(new Word("root"));
+
+		dictionaryIntitialized = false;
+
+		try
+		{
+			constructDictionaryTree("/usr/share/dict/words");
+		}
+		catch(IOException e)
+		{
+			System.out.println("It didn't work");
+		}
 
 			try {
 				readFile("/Users/Nick/Downloads/HCI_Project1/Data/data1.txt");
@@ -102,6 +119,28 @@ public class WordProcessor
 		fstream.close();
 	}
 
+	private void constructDictionaryTree(String pathname) throws IOException
+	{
+		FileInputStream fstream = new FileInputStream(pathname);
+		BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+
+		String strLine;
+
+		//Read File Line By Line
+		while ((strLine = br.readLine()) != null)   {
+		  // Print the content on the console
+		  Word tempWord = new Word(strLine);
+		  tempWord.setValidity(true);
+		  processWord(tempWord, dictionaryTree);
+		}
+
+		dictionaryIntitialized = true;
+
+		//Close the input stream
+		br.close();
+		fstream.close();
+	}
+
 	/*
 	 * This class takes in a word and the root WordTree node and either adds the word to the
 	 * tree or if the word is already there it increments the probability of that word.
@@ -115,10 +154,10 @@ public class WordProcessor
 				boolean found = false;
 				for(WordTree child : tree.children)
 				{
-					if(child.data.value.equals(word.value))
+					if(child.data.getValue().equals(word.value))
 					{
 						found = true;
-						if(checkForWord(child.data.value))
+						if(checkWordValidity(child.data.getValue()) == true)
 						{
 							child.data.incrementProbability();
 						}
@@ -134,7 +173,7 @@ public class WordProcessor
 				boolean match = false;
 				for(WordTree child : tree.children)
 				{
-					if(beginsWith(child.data.value, word.value))
+					if(beginsWith(child.data.getValue(), word.value))
 					{
 						match = true;
 						processWord(word, child);
@@ -160,19 +199,19 @@ public class WordProcessor
 	{
 		if(tree.level <= word.value.length())
 		{
-		String temp = "";
-		for(int i = 0; i < tree.level; i++)
-		{
-			temp = temp + word.value.charAt(i);
-		}
-		tree.addChild(new Word(temp));
-		for(WordTree child : tree.children)
-		{
-			if(child.data.value == temp)
+			String temp = "";
+			for(int i = 0; i < tree.level; i++)
 			{
-				addAllLettersOfWord(word, child);
+				temp = temp + word.value.charAt(i);
 			}
-		}
+			tree.addChild(new Word(temp));
+			for(WordTree child : tree.children)
+			{
+				if(child.data.getValue() == temp)
+				{
+					addAllLettersOfWord(word, child);
+				}
+			}
 		}
 	}
 
@@ -180,14 +219,14 @@ public class WordProcessor
 	 * This function is responsible for finding a specific node in the overall tree
 	 * and returning it.
 	 */
-	public WordTree findWord(Word word, WordTree tree)
+	public WordTree findWord(String word, WordTree tree)
 	{
 		WordTree match = null;
 		if(!tree.children.isEmpty())
 		{
 			for(WordTree child : tree.children)
 			{
-				if(child.data.value.equals(word.value))
+				if(child.data.getValue().equals(word))
 				{
 					match = child;
 				}
@@ -196,7 +235,7 @@ public class WordProcessor
 			{
 				for(WordTree child : tree.children)
 				{
-					if(word.value.startsWith(child.data.value))
+					if(word.startsWith(child.data.getValue()))
 					{
 						match = findWord(word, child);
 					}
@@ -224,7 +263,7 @@ public class WordProcessor
 			if(probability.getProbability() > 0)
 			{
 				probabilityFactor = probability.getProbability()
-					+ (doBigramAnalysis(probability.value, tree.data.value) * 2);
+					+ (doBigramAnalysis(probability.value, tree.data.getValue()) * 2);
 				if(probabilityFactor > greatestProbability)
 				{
 					greatestProbability = probabilityFactor;
@@ -232,7 +271,7 @@ public class WordProcessor
 				}
 				else if(probabilityFactor == greatestProbability)
 				{
-					suggestion = getBestMatch(suggestion, probability.value, tree.data.value);
+					suggestion = getBestMatch(suggestion, probability.value, tree.data.getValue());
 				}
 			}
 		}
@@ -246,7 +285,7 @@ public class WordProcessor
 			if(probability.getProbability() > 0)
 			{
 				probabilityFactor = probability.getProbability()
-						+ (doBigramAnalysis(probability.value, tree.data.value) * 2);
+						+ (doBigramAnalysis(probability.value, tree.data.getValue()) * 2);
 				if(probabilityFactor > greatestProbability)
 				{
 					greatestProbability = probabilityFactor;
@@ -254,7 +293,7 @@ public class WordProcessor
 				}
 				else if(probabilityFactor == greatestProbability)
 				{
-					suggestion = getBestMatch(suggestion, probability.value, tree.data.value);
+					suggestion = getBestMatch(suggestion, probability.value, tree.data.getValue());
 				}
 			}
 		}
@@ -268,7 +307,7 @@ public class WordProcessor
 			if(probability.getProbability() > 0)
 			{
 				probabilityFactor = probability.getProbability()
-						+ (doBigramAnalysis(probability.value, tree.data.value) * 2);
+						+ (doBigramAnalysis(probability.value, tree.data.getValue()) * 2);
 				if(probabilityFactor > greatestProbability)
 				{
 					greatestProbability = probabilityFactor;
@@ -276,7 +315,7 @@ public class WordProcessor
 				}
 				else if(probabilityFactor == greatestProbability)
 				{
-					suggestion = getBestMatch(suggestion, probability.value, tree.data.value);
+					suggestion = getBestMatch(suggestion, probability.value, tree.data.getValue());
 				}
 			}
 		}
@@ -299,7 +338,7 @@ public class WordProcessor
 				getLowerLevelMatches(child, word, probabilityList);
 				if(child.level > word.level)
 				{
-					if(checkSimilarities(word.data.value, doBigramAnalysis(child.data.value, word.data.value)))
+					if(checkSimilarities(word.data.getValue(), doBigramAnalysis(child.data.getValue(), word.data.getValue())))
 					{
 						probabilityList.add(child.data);
 					}
@@ -343,11 +382,11 @@ public class WordProcessor
 			}
 			if(child.level >= (word.level - levelsToRecurse) && child.level < word.level)
 			{
-				if(doBigramAnalysis(child.data.value, word.data.value) >= (child.data.value.length() / 2))
+				if(doBigramAnalysis(child.data.getValue(), word.data.getValue()) >= (child.data.getValue().length() / 2))
 				{
 					probabilityList.add(child.data);
 				}
-				else if(child.data.value.equals(word.data.value.charAt(0)))
+				else if(child.data.getValue().equals(word.data.getValue().charAt(0)))
 				{
 					probabilityList.add(child.data);
 				}
@@ -370,8 +409,8 @@ public class WordProcessor
 			}
 			if(child.level == word.level)
 			{
-				if(checkSimilarities(word.data.value, doBigramAnalysis(child.data.value, word.data.value))
-						&& !word.data.value.equals(child.data.value))
+				if(checkSimilarities(word.data.getValue(), doBigramAnalysis(child.data.getValue(), word.data.getValue()))
+						&& !word.data.getValue().equals(child.data.getValue()))
 				{
 					probabilityList.add(child.data);
 				}
@@ -391,22 +430,37 @@ public class WordProcessor
 		return answer;
 	}
 
-	public boolean checkForWord(String word)
+	public boolean checkWordValidity(String word)
 	{
-        try {
-            BufferedReader in = new BufferedReader(new FileReader(
-                    "/usr/share/dict/words"));
-            String str;
-            while ((str = in.readLine()) != null) {
-                if (str.indexOf(word) != -1) {
-                    return true;
-                }
-            }
-            in.close();
-        }
-        catch (IOException e) {}
+		boolean wordValidity = false;
+		if (dictionaryIntitialized == false)
+		{
+			try {
+	            BufferedReader in = new BufferedReader(new FileReader(
+	                    "/usr/share/dict/words"));
+	            String str;
+	            while ((str = in.readLine()) != null) {
+	                if (str.indexOf(word) != -1) {
+	                    wordValidity = true;
+	                    break;
+	                }
+	            }
+	            in.close();
+	        }
+	        catch (IOException e) {}
+		}
+		else
+		{
+			if(findWord(word, dictionaryTree) != null)
+			{
+				if(findWord(word, dictionaryTree).data.validity == true)
+				{
+					wordValidity = true;
+				}
+			}
+		}
 
-        return false;
+        return wordValidity;
     }
 
 	/*

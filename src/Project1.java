@@ -32,7 +32,7 @@ public class Project1 extends Application
 		// Set the Scene to the Stage
 		stage.setScene(scene);
 		// Set the Title to the Stage
-		stage.setTitle("Nick's Smart Keyboard");
+		stage.setTitle("Nick's Smart Spell Checker");
 		// Display the Stage
 		stage.show();
 	}

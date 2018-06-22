@@ -1,0 +1,13 @@
+int differences = 0;
+				for(int i = 0; i < child.data.value.length(); i++)
+				{
+					if(!(child.data.value.charAt(i) == word.data.value.charAt(i)))
+					{
+						differences++;
+					}
+				}
+				if (differences <= roundedDivision( word.data.value.length(), 3 )
+						&& differences >= 1)
+				{
+					probabilityList.add(child.data);
+				}

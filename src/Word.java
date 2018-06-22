@@ -5,10 +5,13 @@ public class Word
 
 	public String value;
 
+	public Boolean validity;
+
 	public Word(String word)
 	{
 		probability = 0;
 		value = word;
+		validity = false;
 	}
 
 	public int getProbability()
@@ -24,5 +27,10 @@ public class Word
 	public String getValue()
 	{
 		return value;
+	}
+
+	public void setValidity(Boolean bool)
+	{
+		validity = bool;
 	}
 }
